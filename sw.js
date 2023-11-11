@@ -1,7 +1,7 @@
-//asignar nombre y versión de cache
+// Asignar nombre y versión de la caché
 const CACHE_NAME = 'v1_cache_lilith_pwa';
 
-var urlsToCache= [
+var urlsToCache = [
     "./",
     "./css/bootstrap.css",
     "./css/responsive.css",
@@ -29,7 +29,6 @@ var urlsToCache= [
     "./images/apple-icon-76x76.png",
     "./images/apple-icon-114x114.png",
     "./images/apple-icon-120x120.png",
-    "./images/apple-icon-144x144.png",
     "./images/apple-icon-152x152.png",
     "./images/apple-icon-180x180.png",
     "./images/apple-icon-precomposed.png",
@@ -63,51 +62,46 @@ var urlsToCache= [
     "./images/why-img.jpg",
     "./js/bootstrap.js",
     "./js/jquery-3.4.1.min.js"
-]
+];
 
-self.addEventListener('install', e=> {
+self.addEventListener('install', e => {
     e.waitUntil(
         caches.open(CACHE_NAME)
-        .then(cache=>{
+        .then(cache => {
             return cache.addAll(urlsToCache)
-            .then(()=>{
-                self.skipWaiting();
-            });
+                .then(() => {
+                    self.skipWaiting();
+                });
         })
-            .catch(err=>console.log('No se registró el cache', err))
-            );
-         });
-
-self.addEventListener('activate', e=>{
-    const cacheWitelist=[CACHE_NAME];
-    e.waitUntill(
-        caches.keys()
-        .then(CacheName =>
-            {
-                return Promise.all(
-                    CacheName.map(CacheName =>
-                        {
-                            if(cacheWhitelist.indexOf(CacheName)=== -1)
-                            {
-                                return caches.delete(CacheName);
-                            }
-                        })
-                );
-            })
-            .then(()=>{self.clients.claim();})
-    ); 
+        .catch(err => console.log('No se registró el caché', err))
+    );
 });
 
-self.addEventListener
-    ('fetch', e =>{
-        e.respondWith(
-            caches.match(e.request)
-            .then(res=>{
-                if(res){
-                    return res;
-                }
-                return fetch(e.request);
-            })
-        );
-    });
+self.addEventListener('activate', e => {
+    const cacheWhitelist = [CACHE_NAME];
+    e.waitUntil(
+        caches.keys()
+        .then(CacheNames => {
+            return Promise.all(
+                CacheNames.map(CacheName => {
+                    if (cacheWhitelist.indexOf(CacheName) === -1) {
+                        return caches.delete(CacheName);
+                    }
+                })
+            );
+        })
+        .then(() => { self.clients.claim(); })
+    );
+});
 
+self.addEventListener('fetch', e => {
+    e.respondWith(
+        caches.match(e.request)
+        .then(res => {
+            if (res) {
+                return res;
+            }
+            return fetch(e.request);
+        })
+    );
+});
